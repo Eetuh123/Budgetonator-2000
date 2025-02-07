@@ -2,7 +2,7 @@
 
 1. Create Linear issue or choose one 
 
-2. Copy git branch name ![alt text](image.png)
+2. Copy git branch name
 
 3. Create new branch (git checkout -b copied as branch name) and use the name you just copied as branch name
 
