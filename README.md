@@ -1,4 +1,4 @@
-## Workflow^
+## Workflow
 
 Always create a new branch for your changes. If you forget, you can:
 
