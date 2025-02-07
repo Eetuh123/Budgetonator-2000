@@ -1,4 +1,9 @@
-## Workflow
+## Workflow^
+
+Always create a new branch for your changes. If you forget, you can:
+
+* **Undo staged/committed changes:** `git reset --hard HEAD^` (This will discard any uncommitted or committed changes in your working directory)
+* **Create a new branch and push:** Create the new branch and then use `git push` to push your changes from there.
 
 1. **Create/Choose Linear Issue:** Start by creating a new issue in Linear or selecting an existing one that your work will address.
 
