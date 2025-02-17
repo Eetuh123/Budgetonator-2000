@@ -34,11 +34,11 @@ partial class BudgetinatorWindow
         this.button1 = new System.Windows.Forms.Button();
 
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 450);
+        this.WindowState = FormWindowState.Maximized;
         this.Text = "Budgetinator 2000";
 
         this.button1.Text = "Boom";
-        this.button1.Location = new System.Drawing.Point(50, 50);  // Position the button
+        this.button1.Location = new System.Drawing.Point(50, 50);
         this.button1.Size = new System.Drawing.Size(100, 30);
 
          this.Controls.Add(this.button1);
