@@ -1,8 +1,11 @@
-public class Transcation
+namespace Budgetinator_2000.Models
 {
-    public DateTime Date { get; set; }
-    public decimal Amount { get; set; }
-    public string Gategory { get; set; }
-    public string Description  { get; set; }
-    public TranscationType Type { get; set; }
+    public class Transcation
+    {
+        public DateTime Date { get; set; }
+        public decimal? Amount { get; set; }
+        public Category? Category { get; set; }
+        public string? Description  { get; set; }
+        public TransactionType Type { get; set; }
+    }
 }
