@@ -1,3 +1,4 @@
+using Budgetinator_2000.Controls;
 using Budgetinator_2000.Models;
 using Budgetinator_2000.Views;
 
@@ -6,6 +7,7 @@ namespace Budgetinator_2000
     public partial class BudgetinatorWindow : Form
     {
         private BudgetChart budgetChart;
+        private MovablePanel movablePanel;
         private Budget budget = new Budget();
         
         public BudgetinatorWindow()
@@ -26,13 +28,13 @@ namespace Budgetinator_2000
                 ClientSize.Width - budgetChart.Width - 10,
                 ClientSize.Height - budgetChart.Height - 10
             );
-            
+            movablePanel = new MovablePanel();
+            Controls.Add(movablePanel);
             Controls.Add(budgetChart);
 
             // Generate some sample shit
             Load += (s, e) => GenerateSampleData();
         }
-
         
         private void GenerateSampleData()
         {
