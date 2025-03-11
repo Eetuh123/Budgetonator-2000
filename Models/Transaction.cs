@@ -1,6 +1,6 @@
 namespace Budgetinator_2000.Models
 {
-    public class Transcation
+    public class Transaction
     {
         public DateTime Date { get; set; }
         public decimal? Amount { get; set; }
