@@ -33,6 +33,7 @@ namespace Budgetinator_2000
             );
 
             movablePanel = new MovablePanel();
+            movablePanel.IncomeConf();
             Controls.Add(movablePanel);
 
             Controls.Add(budgetChart);
