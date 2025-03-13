@@ -1,6 +1,6 @@
 namespace Budgetinator_2000.Controls
 {
-    public class MovablePanel : Panel  // Remove parentheses after class name
+    public class MovablePanel : Panel
     {
         private bool isDragging = false;
         private Point dragStartPoint;
@@ -17,8 +17,6 @@ namespace Budgetinator_2000.Controls
             this.MouseMove += MovablePanel_MouseMove;
             this.MouseUp += MovablePanel_MouseUp;
 
-
-            // Create close button
             closeButton = new Button
             {
                 Text = "X",
@@ -33,6 +31,60 @@ namespace Budgetinator_2000.Controls
             this.Controls.Add(closeButton);
             
             closeButton.Click += CloseButton_Click;
+        }
+
+        public void IncomeConf()
+        {
+            TextBox Name = new TextBox
+            {
+               Text = "Name",
+               Size = new Size(120,30),
+               Location = new Point((400 - 120) / 4, 50),
+               BackColor = Color.DarkGray,
+
+            };
+            TextBox Description = new TextBox
+            {
+               Text = "Description",
+               Size = new Size(120,30),
+               Location = new Point(120, 50),
+               BackColor = Color.DarkGray,
+
+            };
+            TextBox Gategory = new TextBox
+            {
+               Text = "Gategory",
+               Size = new Size(120,30),
+               Location = new Point(120, 50),
+               BackColor = Color.DarkGray,
+
+            };
+            Label dateLabel = new Label
+            {
+                Text = "Date:",
+                Size = new Size(120, 30),
+                Location = new Point((400 - 120) / 2, 170),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            DateTimePicker datePicker = new DateTimePicker
+            {
+                Location = new Point((400 - 120) / 2, 200),
+                Format = DateTimePickerFormat.Short
+            };
+            Button Submit = new Button
+            {
+               Text = "Add Income",
+               Size = new Size(120,30),
+               Location = new Point((400 - 120) / 2, 300) ,
+               BackColor = Color.Green,
+
+            };
+
+            this.Controls.Add(dateLabel);
+            this.Controls.Add(datePicker);
+            this.Controls.Add(Name);
+            this.Controls.Add(Description);
+            this.Controls.Add(Submit);
         }
 
         private void CloseButton_Click(object? sender, EventArgs e)
