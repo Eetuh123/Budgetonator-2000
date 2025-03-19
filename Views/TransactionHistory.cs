@@ -62,14 +62,14 @@ namespace Budgetinator_2000.Views
                 SizeF categorySize = g.MeasureString(categoryText, font);
                 xPosition += (int)categorySize.Width + 10;
 
-                string Description = transaction.Description != null ? transaction.Description :  "No Description";
-                g.DrawString(Description, font, textBrush, xPosition, yPosition);
-                SizeF descriptionSize = g.MeasureString(Description, font);
+                string description = transaction.Description != null ? transaction.Description :  "No Description";
+                g.DrawString(description, font, textBrush, xPosition, yPosition);
+                SizeF descriptionSize = g.MeasureString(description, font);
                 xPosition += (int)descriptionSize.Width + 40;
  
                 Brush amountBrush = transaction.Type == TransactionType.Income ? incomeBrush : expenseBrsuh;
-                string Money = (transaction.Amount ?? 0).ToString("C");
-                g.DrawString(Money, font, amountBrush , xPosition, yPosition);
+                string money = (transaction.Amount ?? 0).ToString("C");
+                g.DrawString(money, font, amountBrush , xPosition, yPosition);
                 yPosition += rowHeight;
             }
             // Throw them away when not needed real enivoment friendly :)
