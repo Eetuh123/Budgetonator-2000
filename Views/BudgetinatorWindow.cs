@@ -1,4 +1,3 @@
-
 using Budgetinator_2000.Controls;
 using Budgetinator_2000.Models;
 using Budgetinator_2000.Views;
@@ -8,6 +7,8 @@ namespace Budgetinator_2000
     public partial class BudgetinatorWindow : Form
     {
         private BudgetChart budgetChart;
+
+        private TransactionHistory transactionHistory;
 
         private MovablePanel movablePanel;
 
@@ -20,6 +21,25 @@ namespace Budgetinator_2000
             // Title of window
             this.Text = "Budgetinator 2000";
             
+            // Control History place
+            transactionHistory = new TransactionHistory
+            {
+                Dock = DockStyle.None,
+                Size = new Size(200, 1200),
+                Location = new Point(10, 10),
+            };
+            Panel scrollPanel = new Panel
+            {
+                AutoScroll = true,
+                Size = new Size(400, 300),
+                Location = new Point(10, 10)
+            };
+
+            transactionHistory.Dock = DockStyle.Top;
+            // Set the width but let the height grow based on content
+            transactionHistory.Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth;
+            transactionHistory.AutoSize = true;
+
             // Control where chart is
             budgetChart = new BudgetChart
             {
@@ -31,12 +51,14 @@ namespace Budgetinator_2000
                 ClientSize.Width - budgetChart.Width - 10,
                 ClientSize.Height - budgetChart.Height - 10
             );
-
             movablePanel = new MovablePanel();
-            Controls.Add(movablePanel);
-
+            
+            Controls.Add(transactionHistory);
+            scrollPanel.Controls.Add(transactionHistory);
+            Controls.Add(scrollPanel);
             Controls.Add(budgetChart);
-
+            Controls.Add(movablePanel);
+  
             // Generate some sample shit
             Load += (s, e) => GenerateSampleData();
         }
@@ -114,6 +136,8 @@ namespace Budgetinator_2000
             budgetChart.SetBudget(budget);
             budgetChart.SetDateRange(startDate, today);
             budgetChart.Invalidate();
+            transactionHistory.SetTransactions(transactions);
+            transactionHistory.Invalidate();
         }
     }
 }
