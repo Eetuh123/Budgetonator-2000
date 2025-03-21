@@ -361,7 +361,7 @@ namespace Budgetinator_2000.Controls
                 BackColor = Color.LightGray,
                 Visible = false
             };
-
+            // pilotee asioita ja laittaa esille
             categoryComboBox.SelectedIndexChanged += (sender, e) =>
             {
                 if (categoryComboBox.SelectedItem != null && categoryComboBox.SelectedItem.ToString() == "Palkka")
