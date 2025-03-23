@@ -19,6 +19,7 @@ namespace Budgetinator_2000.Views
         {
             _transactions = transactions;
             CalculateMaxValue();
+            Invalidate();
         }
         
         public void SetDateRange(DateTime startDate, DateTime endDate)

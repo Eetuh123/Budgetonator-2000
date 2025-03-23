@@ -17,6 +17,7 @@ namespace Budgetinator_2000.Controls
         private DateTimePicker datePicker;
         private Label dateLabel;
         private TransactionHistory transactionHistory;
+        private BudgetChart budgetChart;
 
         private readonly TransactionService transactionService;
 
@@ -24,7 +25,10 @@ namespace Budgetinator_2000.Controls
         {
             transactionHistory = history;
         }
-
+        public void SetBudgetChart(BudgetChart chart)
+        {
+            budgetChart = chart;
+        }
         public MovablePanel(TransactionService sharedService)
         {
             transactionService = sharedService;
@@ -666,6 +670,13 @@ namespace Budgetinator_2000.Controls
                 };
 
                 transactionService.AddTransaction(newTransaction);
+                budgetChart.SetDateRange(
+                new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-11),
+                DateTime.Today
+                );
+                budgetChart.SetTransactions(transactionService.GetTransactions());
+                budgetChart.Invalidate();
+                budgetChart.Update();
                 transactionHistory.SetTransactions(transactionService.GetTransactions());
                 transactionHistory.Invalidate();
 
