@@ -12,7 +12,9 @@ namespace Budgetinator_2000
         private MovablePanel movablePanel;
 
         private Budget budget = new Budget();
-        
+
+        private Button openMovablePanelButton;
+
         public BudgetinatorWindow()
         {
             InitializeComponent();
@@ -37,6 +39,26 @@ namespace Budgetinator_2000
             Controls.Add(movablePanel);
 
             Controls.Add(budgetChart);
+
+            // Button to open the movable panel
+            openMovablePanelButton = new Button
+            {
+                Text = "Add transaction",
+                Size = new Size(120, 40),
+                Location = new Point(10, 10),
+                BackColor = Color.LightGray
+            };
+            openMovablePanelButton.Click += (s, e) =>
+            {
+                if (movablePanel == null || movablePanel.IsDisposed)
+                {
+                    movablePanel = new MovablePanel();
+                    movablePanel.IncomeConf();
+                    Controls.Add(movablePanel);
+                }
+                movablePanel.BringToFront();
+            };
+            Controls.Add(openMovablePanelButton);
 
             // Generate some sample shit
             Load += (s, e) => GenerateSampleData();
