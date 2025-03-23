@@ -29,6 +29,7 @@ namespace Budgetinator_2000.Controls
             BorderStyle = BorderStyle.FixedSingle;
             BackColor = Color.DarkGray;
 
+
             MouseDown += MovablePanel_MouseDown;
             MouseMove += MovablePanel_MouseMove;
             MouseUp += MovablePanel_MouseUp;
