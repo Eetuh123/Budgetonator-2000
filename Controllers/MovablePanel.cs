@@ -564,12 +564,6 @@ namespace Budgetinator_2000.Controls
                     return;
                 }
 
-                // Tarkistetaan Description‐kenttä
-                if (string.IsNullOrWhiteSpace(descriptionTextBox.Text) || descriptionTextBox.Text == "Description")
-                {
-                    MessageBox.Show("Please enter a valid Description.");
-                    return;
-                }
 
                 // Tarkistetaan Category
                 if (categoryComboBox.SelectedItem == null || categoryComboBox.SelectedItem.ToString() == "Pick category")
@@ -636,8 +630,9 @@ namespace Budgetinator_2000.Controls
                 decimal finalAmount = amount;
                 if (netCheckBox.Checked)
                 {
+                    string taxTextWithoutPercent = netTaxTextBox.Text.Replace("%", "");
                     // Yritetään parse veroprosentti
-                    if (!decimal.TryParse(netTaxTextBox.Text.Replace(',', '.'),
+                    if (!decimal.TryParse(taxTextWithoutPercent.Replace(',', '.'),
                                           NumberStyles.AllowDecimalPoint,
                                           CultureInfo.InvariantCulture,
                                           out decimal taxPercent) || taxPercent < 0)
@@ -645,11 +640,6 @@ namespace Budgetinator_2000.Controls
                         MessageBox.Show("Please enter valid Tax %.");
                         return;
                     }
-                    // Tähän väliin koodi missä otetaan tax % ja muutetaan se taxPercent desimaaliksi
-
-
-                    // Tähän väliin koodi missä otetaan tax % ja muutetaan se taxPercent desimaaliksi
-
                     // Lasketaan veron määrä
                     decimal taxDeduction = SalaryCalculations.TaxDeduction(amount, taxPercent);
                     // Lasketaan nettopalkka
