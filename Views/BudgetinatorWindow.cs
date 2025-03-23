@@ -63,6 +63,7 @@ namespace Budgetinator_2000
             {
                 if (e.KeyCode == Keys.Enter)
                 {
+                    e.SuppressKeyPress = true;
                     string searchTerm = searchBox.Text;
                     var fullList = transactionService.GetTransactions();
                     var filtered = TransactionFilter.FilterTransactions(fullList, searchTerm);
@@ -95,7 +96,8 @@ namespace Budgetinator_2000
             {
                 if (movablePanel == null || movablePanel.IsDisposed)
                 {
-                    movablePanel = new MovablePanel();
+                    movablePanel = new MovablePanel(transactionService);
+                    movablePanel.SetTransactionHistory(transactionHistory);
                     movablePanel.IncomeConf();
                     Controls.Add(movablePanel);
                 }
@@ -186,6 +188,7 @@ namespace Budgetinator_2000
             budgetChart.SetDateRange(startDate, today);
             budgetChart.Invalidate();
             transactionHistory.SetTransactions(transactions);
+            transactionHistory.Invalidate();
         }
     }
 }

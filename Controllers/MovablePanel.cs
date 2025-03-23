@@ -1,6 +1,7 @@
-﻿﻿using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Budgetinator_2000.Views;
 using System.Globalization;
 using Budgetinator_2000.Models;
 using Budgetinator_2000.Mathcalculations;
@@ -15,12 +16,18 @@ namespace Budgetinator_2000.Controls
         private Button closeButton;
         private DateTimePicker datePicker;
         private Label dateLabel;
+        private TransactionHistory transactionHistory;
 
-        private readonly TransactionService transactionService = new TransactionService();
+        private readonly TransactionService transactionService;
 
-        public MovablePanel()
+        public void SetTransactionHistory(TransactionHistory history)
         {
+            transactionHistory = history;
+        }
 
+        public MovablePanel(TransactionService sharedService)
+        {
+            transactionService = sharedService;
             datePicker = new DateTimePicker();
             dateLabel = new Label();
 
@@ -126,7 +133,23 @@ namespace Budgetinator_2000.Controls
                 BackColor = Color.LightGray
             };
             categoryComboBox.Items.Add("Pick category");
-            categoryComboBox.Items.AddRange(new object[] { "Palkka", "Category 2", "Category 3" });
+            categoryComboBox.Items.AddRange(new object[] {
+            "Housing",
+            "Groceries",
+            "Transportation",
+            "Bills & Utilities",
+            "Entertainment & Leisure",
+            "Clothing & Personal Care",
+            "Healthcare",
+            "Savings & Investments",
+            "Dining Out",
+            "Salary",
+            "Rent or Mortgage",
+            "Utilities",
+            "Hobbies",
+            "Travel",
+            "Other"
+            });
             categoryComboBox.SelectedIndex = 0;
 
             Controls.Add(categoryComboBox);
@@ -364,7 +387,7 @@ namespace Budgetinator_2000.Controls
             // pilotee asioita ja laittaa esille
             categoryComboBox.SelectedIndexChanged += (sender, e) =>
             {
-                if (categoryComboBox.SelectedItem != null && categoryComboBox.SelectedItem.ToString() == "Palkka")
+                if (categoryComboBox.SelectedItem != null && categoryComboBox.SelectedItem.ToString() == "Salary")
                 {
                     grossCheckBox.Visible = true;
                     netCheckBox.Visible = true;
@@ -575,16 +598,16 @@ namespace Budgetinator_2000.Controls
                     return;
                 }
 
-                // Päätellään TransactionType sen perusteella onko "Palkka" vai ei.
+                // Päätellään TransactionType sen perusteella onko "Salary" vai ei.
                 TransactionType type;
 
-                // Jos category on "Palkka", transaction on automaattisesti Income
-                if (categoryComboBox.SelectedItem.ToString() == "Palkka")
+                // Jos category on "Salary", transaction on automaattisesti Income
+                if (categoryComboBox.SelectedItem.ToString() == "Salary")
                 {
-                    // Vaadi myös Gross tai Net jos Palkka
+                    // Vaadi myös Gross tai Net jos Salary
                     if (!grossCheckBox.Checked && !netCheckBox.Checked)
                     {
-                        MessageBox.Show("Please select Gross or Net for 'Palkka'.");
+                        MessageBox.Show("Please select Gross or Net for 'Salary'.");
                         return;
                     }
                     // Asetetaan type suoraan Income
@@ -643,6 +666,8 @@ namespace Budgetinator_2000.Controls
                 };
 
                 transactionService.AddTransaction(newTransaction);
+                transactionHistory.SetTransactions(transactionService.GetTransactions());
+                transactionHistory.Invalidate();
 
                 MessageBox.Show("Transaction added!");
             };
