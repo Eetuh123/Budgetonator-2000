@@ -77,25 +77,18 @@ namespace Budgetinator_2000
                 scrollPanel.Height = ClientSize.Height - 20;
                 searchBox.Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth;
             };
-
-            // Movable panel setup
-            movablePanel = new MovablePanel();
-            movablePanel.IncomeConf();
-            Controls.Add(movablePanel);
-
             // Add controls to form
             scrollPanel.Controls.Add(searchBox);
             scrollPanel.Controls.Add(transactionHistory);
             Controls.Add(scrollPanel);
             Controls.Add(budgetChart);
-            Controls.Add(movablePanel);
 
             // Button to open the movable panel
             openMovablePanelButton = new Button
             {
                 Text = "Add transaction",
                 Size = new Size(120, 40),
-                Location = new Point(10, 10),
+                Location = new Point(600, 600),
                 BackColor = Color.LightGray
             };
             openMovablePanelButton.Click += (s, e) =>
@@ -193,7 +186,6 @@ namespace Budgetinator_2000
             budgetChart.SetDateRange(startDate, today);
             budgetChart.Invalidate();
             transactionHistory.SetTransactions(transactions);
-            transactionHistory.Invalidate();
         }
     }
 }
