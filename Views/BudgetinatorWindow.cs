@@ -98,6 +98,7 @@ namespace Budgetinator_2000
                 {
                     movablePanel = new MovablePanel(transactionService);
                     movablePanel.SetTransactionHistory(transactionHistory);
+                    movablePanel.SetBudgetChart(budgetChart);
                     movablePanel.IncomeConf();
                     Controls.Add(movablePanel);
                 }
