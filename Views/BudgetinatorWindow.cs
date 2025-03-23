@@ -34,8 +34,6 @@ namespace Budgetinator_2000
                 ClientSize.Height - budgetChart.Height - 10
             );
 
-            movablePanel = new MovablePanel();
-            movablePanel.IncomeConf();
             Controls.Add(movablePanel);
 
             Controls.Add(budgetChart);

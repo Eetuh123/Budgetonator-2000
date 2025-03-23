@@ -613,8 +613,11 @@ namespace Budgetinator_2000.Controls
                 decimal finalAmount = amount;
                 if (netCheckBox.Checked)
                 {
+                    // Poistetaan mahdollinen prosenttimerkki syötteestä
+                    string taxTextWithoutPercent = netTaxTextBox.Text.Replace("%", "");
                     // Yritetään parse veroprosentti
-                    if (!decimal.TryParse(netTaxTextBox.Text.Replace(',', '.'),
+                    // Yritetään parse veroprosentti
+                    if (!decimal.TryParse(taxTextWithoutPercent.Replace(',', '.'),
                                           NumberStyles.AllowDecimalPoint,
                                           CultureInfo.InvariantCulture,
                                           out decimal taxPercent) || taxPercent < 0)
@@ -622,11 +625,8 @@ namespace Budgetinator_2000.Controls
                         MessageBox.Show("Please enter valid Tax %.");
                         return;
                     }
-                    // Tähän väliin koodi missä otetaan tax % ja muutetaan se taxPercent desimaaliksi
-
-
-                    // Tähän väliin koodi missä otetaan tax % ja muutetaan se taxPercent desimaaliksi
-
+                    // otetaan tax % ja muutetaan se taxPercent desimaaliksi
+                    taxPercent = taxPercent / 100;
                     // Lasketaan veron määrä
                     decimal taxDeduction = SalaryCalculations.TaxDeduction(amount, taxPercent);
                     // Lasketaan nettopalkka
