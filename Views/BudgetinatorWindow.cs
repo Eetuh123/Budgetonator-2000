@@ -9,6 +9,7 @@ namespace Budgetinator_2000
         private BudgetChart budgetChart;
 
         private TransactionHistory transactionHistory;
+        private TransactionService transactionService = new TransactionService();
 
         private MovablePanel movablePanel;
 
@@ -17,49 +18,74 @@ namespace Budgetinator_2000
         public BudgetinatorWindow()
         {
             InitializeComponent();
-            
-            // Title of window
             this.Text = "Budgetinator 2000";
-            
-            // Control History place
-            transactionHistory = new TransactionHistory
-            {
-                Dock = DockStyle.None,
-                Size = new Size(200, 1200),
-                Location = new Point(10, 10),
-            };
-            Panel scrollPanel = new Panel
-            {
-                AutoScroll = true,
-                Size = new Size(400, 300),
-                Location = new Point(10, 10)
-            };
 
-            transactionHistory.Dock = DockStyle.Top;
-            // Set the width but let the height grow based on content
-            transactionHistory.Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth;
-            transactionHistory.AutoSize = true;
-
-            // Control where chart is
+            // Budget Chart
             budgetChart = new BudgetChart
             {
                 Dock = DockStyle.None,
                 Size = new Size(1000, 400),
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+                Location = new Point(
+                    ClientSize.Width - 1000 - 10,
+                    ClientSize.Height - 400 - 10
+                )
             };
-            budgetChart.Location = new Point(
-                ClientSize.Width - budgetChart.Width - 10,
-                ClientSize.Height - budgetChart.Height - 10
-            );
+
+            // Scroll thing for history
+            Panel scrollPanel = new Panel
+            {
+                AutoScroll = true,
+                Size = new Size(400, ClientSize.Height),
+                Location = new Point(10, 10)
+            };
+
+            // Search Box bro
+            TextBox searchBox = new TextBox
+            {
+                Location = new Point(0, 0),
+                Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth
+            };
+
+            // Create History
+            transactionHistory = new TransactionHistory
+            {
+                AutoSize = false,
+                Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth,
+                Location = new Point(0, searchBox.Height + 5),
+                Dock = DockStyle.Top,
+            };
+
+            // Search Enter Key = Working
+            searchBox.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    string searchTerm = searchBox.Text;
+                    var fullList = transactionService.GetTransactions();
+                    var filtered = TransactionFilter.FilterTransactions(fullList, searchTerm);
+                    transactionHistory.SetTransactions(filtered);
+                    transactionHistory.Invalidate();
+                }
+            };
+
+            // Reziseer
+            Resize += (s, e) =>
+            {
+                scrollPanel.Height = ClientSize.Height - 20;
+                searchBox.Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth;
+            };
+
+            // Movable panel setup
             movablePanel = new MovablePanel();
-            
-            Controls.Add(transactionHistory);
+
+            // Add controls to form
+            scrollPanel.Controls.Add(searchBox);
             scrollPanel.Controls.Add(transactionHistory);
             Controls.Add(scrollPanel);
             Controls.Add(budgetChart);
             Controls.Add(movablePanel);
-  
-            // Generate some sample shit
+
             Load += (s, e) => GenerateSampleData();
         }
 
@@ -126,6 +152,11 @@ namespace Budgetinator_2000
                 // Budget Target
                 decimal target = 2000 + (decimal)(random.NextDouble() * 1500);
                 budget.SetMonthlyTarget(new DateTime(year, month, 1), target);
+            }
+
+            foreach (var t in transactions)
+            {
+                transactionService.AddTransaction(t);
             }
 
             DateTime startDate = today.AddMonths(-11);

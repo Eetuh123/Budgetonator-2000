@@ -12,10 +12,41 @@ namespace Budgetinator_2000.Views
         {
             _transactions = transactions;
             OrderTransactions(); 
+            Height = EstimateContentHeight();
+            Invalidate();
         }
         private void OrderTransactions()
         {
            _transactions = _transactions.OrderByDescending(t => t.Date).ToList();
+        }
+        private int EstimateContentHeight()
+        {
+            int rowHeight = 25;
+            int yPosition = 10;
+
+            DateTime? currentMonth = null;
+            DateTime? currentDay = null;
+
+            foreach (var transaction in _transactions)
+            {
+                if (currentMonth == null || currentMonth.Value.Month != transaction.Date.Month
+                    || currentMonth.Value.Year != transaction.Date.Year)
+                {
+                    currentMonth = transaction.Date;
+                    currentDay = null;
+                    yPosition += rowHeight;
+                }
+
+                if (currentDay == null || currentDay.Value.Day != transaction.Date.Day)
+                {
+                    currentDay = transaction.Date;
+                    yPosition += rowHeight;
+                }
+
+                yPosition += rowHeight;
+            }
+
+            return yPosition + 10;
         }
         protected override void OnPaint(PaintEventArgs e){
 
@@ -29,8 +60,7 @@ namespace Budgetinator_2000.Views
 
             int yPosition = 10;
             int rowHeight = 25;
-
-            int dateX = 10;
+            int correctX = 10;
 
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
@@ -44,18 +74,18 @@ namespace Budgetinator_2000.Views
                     {
                         currentMonth = transaction.Date;
                         currentDay = null;
-                        g.DrawString(transaction.Date.ToString("MMMM yyyy"), font, textBrush, dateX, yPosition);
+                        g.DrawString(transaction.Date.ToString("MMMM yyyy"), font, textBrush, correctX, yPosition);
                         yPosition += rowHeight;
 
                     }
                 if (currentDay == null || currentDay.Value.Day != transaction.Date.Day)
                     {
                         currentDay = transaction.Date;
-                        g.DrawString(transaction.Date.ToString("dd/MM/yyyy"), font, textBrush, dateX, yPosition);
+                        g.DrawString(transaction.Date.ToString("dd/MM/yyyy"), font, textBrush, correctX, yPosition);
                         yPosition += rowHeight;
                     }
 
-                int xPosition = dateX;
+                int xPosition = correctX;
                 string categoryText = transaction.Category != null ? transaction.Category.Name :  "No Category";
                 g.DrawString(categoryText, font, textBrush, xPosition, yPosition);
                 

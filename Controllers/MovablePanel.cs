@@ -17,6 +17,8 @@ namespace Budgetinator_2000.Controls
             this.MouseMove += MovablePanel_MouseMove;
             this.MouseUp += MovablePanel_MouseUp;
 
+            this.MouseDown += (s, e) => BringToFront(); 
+
 
             // Create close button
             closeButton = new Button
