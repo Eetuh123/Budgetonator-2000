@@ -256,7 +256,7 @@ namespace Budgetinator_2000.Controls
                 monthlyButton.Visible = isChecked;
                 yearlyButton.Visible = isChecked;
             };
-            // Amount TextBox
+            // Amount TextBox 
             TextBox amountTextBox = new TextBox
             {
                 Text = "Enter Amount",
