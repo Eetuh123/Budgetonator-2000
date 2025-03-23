@@ -2,11 +2,6 @@
 
 partial class BudgetinatorWindow  
 {
-
-    private System.Windows.Forms.Button button1;
-    /// <summary>
-    ///  Required designer variable.
-    /// </summary>
     private System.ComponentModel.IContainer components = null;
 
     /// <summary>
