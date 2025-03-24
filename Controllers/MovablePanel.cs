@@ -13,9 +13,9 @@ namespace Budgetinator_2000.Controls
         private bool isDragging = false;
         private Point dragStartPoint;
         private Button closeButton;
-        private DateTimePicker datePicker; // Alkuperäisen tapahtuman päivämäärä
+        private DateTimePicker datePicker;
         private Label dateLabel;
-        private DateTimePicker endDatePicker; // Toistojakson lopetuspäivämäärä
+        private DateTimePicker endDatePicker;
         private Label endDateLabel;
         private TransactionHistory transactionHistory;
         private BudgetChart budgetChart;
@@ -35,8 +35,8 @@ namespace Budgetinator_2000.Controls
             transactionService = sharedService;
             datePicker = new DateTimePicker();
             dateLabel = new Label();
-            endDatePicker = new DateTimePicker(); // Alustetaan lopetuspäivämäärän valitsin
-            endDateLabel = new Label();        // Alustetaan lopetuspäivämäärän label
+            endDatePicker = new DateTimePicker();
+            endDateLabel = new Label();
 
             Size = new Size(400, 450);
             Location = new Point(100, 100);
@@ -161,26 +161,26 @@ namespace Budgetinator_2000.Controls
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(150, 30),
-                Location = new Point(30, endDatePicker.Bottom + 20),  // Sijoitetaan alemmaksi
+                Location = new Point(30, endDatePicker.Bottom + 20),
                 BackColor = Color.LightGray
             };
             categoryComboBox.Items.Add("Pick category");
             categoryComboBox.Items.AddRange(new object[] {
-                                    "Housing",
-                                    "Groceries",
-                                    "Transportation",
-                                    "Bills & Utilities",
-                                    "Entertainment & Leisure",
-                                    "Clothing & Personal Care",
-                                    "Healthcare",
-                                    "Savings & Investments",
-                                    "Dining Out",
-                                    "Salary",
-                                    "Rent or Mortgage",
-                                    "Utilities",
-                                    "Hobbies",
-                                    "Travel",
-                                    "Other"
+             "Housing",
+             "Groceries",
+             "Transportation",
+             "Bills & Utilities",
+             "Entertainment & Leisure",
+             "Clothing & Personal Care",
+             "Healthcare",
+             "Savings & Investments",
+             "Dining Out",
+             "Salary",
+             "Rent or Mortgage",
+             "Utilities",
+             "Hobbies",
+             "Travel",
+             "Other"
             });
             categoryComboBox.SelectedIndex = 0;
 
@@ -191,7 +191,7 @@ namespace Budgetinator_2000.Controls
             {
                 Text = "Repeat?",
                 Size = new Size(80, 30),
-                Location = new Point(220, endDatePicker.Bottom + 20), // Sijoitetaan alemmas ja oikealle
+                Location = new Point(220, endDatePicker.Bottom + 20),
                 BackColor = Color.DarkGray,
                 ForeColor = Color.White
             };
@@ -428,7 +428,7 @@ namespace Budgetinator_2000.Controls
             {
                 Text = "Enter Tax %",
                 Size = new Size(70, 30),
-                Location = new Point(netCheckBox.Right, amountTextBox.Bottom + 35), // Sijoitetaan alemmas
+                Location = new Point(netCheckBox.Right, amountTextBox.Bottom + 35),
                 BackColor = Color.LightGray,
                 Visible = false
             };
@@ -529,21 +529,17 @@ namespace Budgetinator_2000.Controls
             // Sallitaan vain numeroita ja yksi pilkku (kaksi desimaalia). Estetään välilyönnit.
             netTaxTextBox.KeyPress += (sender, e) =>
             {
-                // Estetään välilyönti
                 if (e.KeyChar == ' ')
                 {
                     e.Handled = true;
                     return;
                 }
 
-                // Salli ohjauskomennot (esim. Backspace)
                 if (char.IsControl(e.KeyChar))
                     return;
 
-                // Poistetaan väliaikaisesti mahdollinen '%'
                 string textWithoutPercent = netTaxTextBox.Text.Replace("%", "");
 
-                // Jos käyttäjä yrittää syöttää pilkun aivan alkuun, lisätään "0,"
                 if (textWithoutPercent.Length == 0 && e.KeyChar == ',')
                 {
                     netTaxTextBox.Text = "0,";
@@ -552,10 +548,8 @@ namespace Budgetinator_2000.Controls
                     return;
                 }
 
-                // Jos tekstissä on jo pilkku
                 if (textWithoutPercent.Contains(','))
                 {
-                    // Estä toisen pilkun syöttö
                     if (e.KeyChar == ',')
                     {
                         e.Handled = true;
@@ -565,14 +559,12 @@ namespace Budgetinator_2000.Controls
                     int indexAfterComma = textWithoutPercent.IndexOf(',') + 1;
                     int decimalsAfterComma = textWithoutPercent.Length - indexAfterComma;
 
-                    // Estä yli kahden desimaalin syöttö
                     if (decimalsAfterComma >= 2)
                     {
                         e.Handled = true;
                         return;
                     }
 
-                    // Salli vain numerot
                     if (!char.IsDigit(e.KeyChar))
                     {
                         e.Handled = true;
@@ -580,13 +572,11 @@ namespace Budgetinator_2000.Controls
                 }
                 else
                 {
-                    // Ei ole vielä pilkkua, joten sallitaan pilkku tai numero
                     if (e.KeyChar == ',')
                     {
                         return;
                     }
 
-                    // Muutoin vain numerot
                     if (!char.IsDigit(e.KeyChar))
                     {
                         e.Handled = true;
@@ -646,7 +636,6 @@ namespace Budgetinator_2000.Controls
                 // Jos category on "Salary", transaction on automaattisesti Income
                 if (categoryComboBox.SelectedItem.ToString() == "Salary")
                 {
-                    // Vaadi myös Gross tai Net jos Salary
                     if (!grossCheckBox.Checked && !netCheckBox.Checked)
                     {
                         MessageBox.Show("Please select Gross or Net for 'Salary'.");
@@ -657,14 +646,12 @@ namespace Budgetinator_2000.Controls
                 }
                 else
                 {
-                    // Muissa kategorioissa pitää valita Expense tai income
                     if (!expenseCheckBox.Checked && !incomeCheckBox.Checked)
                     {
                         MessageBox.Show("Please select Expense or income.");
                         return;
                     }
 
-                    // Jos expense valittu, tyyppi = Expense, muuten Income
                     if (expenseCheckBox.Checked)
                     {
                         type = TransactionType.Expense;
@@ -680,7 +667,6 @@ namespace Budgetinator_2000.Controls
                 if (netCheckBox.Checked)
                 {
                     string taxTextWithoutPercent = netTaxTextBox.Text.Replace("%", "");
-                    // Yritetään parse veroprosentti
                     if (!decimal.TryParse(taxTextWithoutPercent.Replace(',', '.'),
                                           NumberStyles.AllowDecimalPoint,
                                           CultureInfo.InvariantCulture,
@@ -689,15 +675,12 @@ namespace Budgetinator_2000.Controls
                         MessageBox.Show("Please enter valid Tax %.");
                         return;
                     }
-                    //Tarkistetaan, että on välillä 0-100
                     if (taxPercent < 0 || taxPercent > 100)
                     {
                         MessageBox.Show("Tax percentage must be between 0 and 100.");
                         return;
                     }
-                    // Lasketaan veron määrä
                     decimal taxDeduction = SalaryCalculations.TaxDeduction(amount, taxPercent);
-                    // Lasketaan nettopalkka
                     finalAmount = SalaryCalculations.NetSalary(amount, taxDeduction);
                 }
 
@@ -710,12 +693,12 @@ namespace Budgetinator_2000.Controls
                     Type = type
                 };
 
-                transactionService.AddTransaction(newTransaction);  // Lisää alkuperäisen tapahtuman
+                transactionService.AddTransaction(newTransaction); 
 
                 if (repeatCheckBox.Checked && isWeeklyButtonToggled)
                 {
-                    DateTime startDate = datePicker.Value; // Aloituspäivä
-                    DateTime endDate = endDatePicker.Value; // Lopetuspäivä
+                    DateTime startDate = datePicker.Value;
+                    DateTime endDate = endDatePicker.Value;
 
                     if (startDate > endDate)
                     {
@@ -730,7 +713,7 @@ namespace Budgetinator_2000.Controls
                             Date = currentDate,
                             Amount = finalAmount,
                             Category = new Category { Name = categoryComboBox.SelectedItem.ToString() },
-                            Description = descriptionTextBox.Text + " (Weekly)", // Poista järjestysnumero
+                            Description = descriptionTextBox.Text + " (Weekly)",
                             Type = type
                         };
                         transactionService.AddTransaction(recurringTransaction);
