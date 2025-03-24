@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Budgetinator_2000.Views;
 using System.Globalization;
 using Budgetinator_2000.Models;
 using Budgetinator_2000.Mathcalculations;
-
 
 namespace Budgetinator_2000.Controls
 {
@@ -16,8 +15,10 @@ namespace Budgetinator_2000.Controls
         private Button closeButton;
         private DateTimePicker datePicker;
         private Label dateLabel;
-        private TransactionHistory? transactionHistory;
-        private BudgetChart? budgetChart;
+        private DateTimePicker endDatePicker;
+        private Label endDateLabel;
+        private TransactionHistory transactionHistory;
+        private BudgetChart budgetChart;
 
         private readonly TransactionService transactionService;
 
@@ -34,8 +35,10 @@ namespace Budgetinator_2000.Controls
             transactionService = sharedService;
             datePicker = new DateTimePicker();
             dateLabel = new Label();
+            endDatePicker = new DateTimePicker();
+            endDateLabel = new Label();
 
-            Size = new Size(400, 400);
+            Size = new Size(400, 450);
             Location = new Point(100, 100);
             BorderStyle = BorderStyle.FixedSingle;
             BackColor = Color.DarkGray;
@@ -66,7 +69,8 @@ namespace Budgetinator_2000.Controls
                 Text = "Name",
                 Size = new Size(150, 30),
                 Location = new Point(30, 50),
-                BackColor = Color.LightGray
+                BackColor = Color.LightGray,
+                Visible = false
             };
 
             nameTextBox.GotFocus += (sender, e) =>
@@ -84,19 +88,20 @@ namespace Budgetinator_2000.Controls
                     nameTextBox.Text = "Name";
                 }
             };
+            Controls.Add(nameTextBox);
 
             // Description TextBox
             TextBox descriptionTextBox = new TextBox
             {
-                Text = "Description",
+                Text = "Transaction name",
                 Size = new Size(150, 30),
-                Location = new Point(220, 50),
+                Location = new Point(30, 50),
                 BackColor = Color.LightGray
             };
 
             descriptionTextBox.GotFocus += (sender, e) =>
             {
-                if (descriptionTextBox.Text == "Description")
+                if (descriptionTextBox.Text == "Transaction name")
                 {
                     descriptionTextBox.Text = "";
                 }
@@ -106,12 +111,11 @@ namespace Budgetinator_2000.Controls
             {
                 if (string.IsNullOrWhiteSpace(descriptionTextBox.Text))
                 {
-                    descriptionTextBox.Text = "Description";
+                    descriptionTextBox.Text = "Transaction name";
                 }
             };
-
-
-            // Date Label
+            Controls.Add(descriptionTextBox);
+            // Date Label alkuperäiselle päivämäärälle
             dateLabel = new Label
             {
                 Text = "Date:",
@@ -119,40 +123,64 @@ namespace Budgetinator_2000.Controls
                 Location = new Point(30, 95),
                 TextAlign = ContentAlignment.MiddleLeft
             };
+            Controls.Add(dateLabel);
 
-            // DateTimePicker
+            // DateTimePicker alkuperäiselle päivämäärälle
             datePicker = new DateTimePicker
             {
                 Format = DateTimePickerFormat.Short,
                 Size = new Size(150, 30),
                 Location = new Point(30, dateLabel.Bottom + 5)
             };
+            Controls.Add(datePicker);
+
+            // Label lopetuspäivämäärälle
+            endDateLabel = new Label
+            {
+                Text = "End Date:",
+                Size = new Size(70, 30),
+                Location = new Point(220, 95),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Visible = false
+            };
+            Controls.Add(endDateLabel);
+
+            // DateTimePicker lopetuspäivämäärälle
+            endDatePicker = new DateTimePicker
+            {
+                Format = DateTimePickerFormat.Short,
+                Size = new Size(150, 30),
+                Location = new Point(220, endDateLabel.Bottom + 5),
+                Visible = false
+            };
+            Controls.Add(endDatePicker);
+
 
             // Category TextBox
             ComboBox categoryComboBox = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(150, 30),
-                Location = new Point(220, 130),
+                Location = new Point(30, endDatePicker.Bottom + 20),
                 BackColor = Color.LightGray
             };
             categoryComboBox.Items.Add("Pick category");
             categoryComboBox.Items.AddRange(new object[] {
-            "Housing",
-            "Groceries",
-            "Transportation",
-            "Bills & Utilities",
-            "Entertainment & Leisure",
-            "Clothing & Personal Care",
-            "Healthcare",
-            "Savings & Investments",
-            "Dining Out",
-            "Salary",
-            "Rent or Mortgage",
-            "Utilities",
-            "Hobbies",
-            "Travel",
-            "Other"
+             "Housing",
+             "Groceries",
+             "Transportation",
+             "Bills & Utilities",
+             "Entertainment & Leisure",
+             "Clothing & Personal Care",
+             "Healthcare",
+             "Savings & Investments",
+             "Dining Out",
+             "Salary",
+             "Rent or Mortgage",
+             "Utilities",
+             "Hobbies",
+             "Travel",
+             "Other"
             });
             categoryComboBox.SelectedIndex = 0;
 
@@ -163,10 +191,11 @@ namespace Budgetinator_2000.Controls
             {
                 Text = "Repeat?",
                 Size = new Size(80, 30),
-                Location = new Point(30, 160),
+                Location = new Point(220, endDatePicker.Bottom + 20),
                 BackColor = Color.DarkGray,
                 ForeColor = Color.White
             };
+            Controls.Add(repeatCheckBox);
 
             // Weekly / Monthly / Yearly Buttons
             Button weeklyButton = new Button
@@ -193,6 +222,11 @@ namespace Budgetinator_2000.Controls
                 BackColor = Color.LightGray,
                 Visible = false
             };
+            Controls.Add(weeklyButton);
+            Controls.Add(monthlyButton);
+            Controls.Add(yearlyButton);
+
+
             // Kun valitsee minkä mukaan toistuu se maalaa kyseisen napin ja ei anna valita useampaa samaan aikaan. voimistaa valitun napin värin
             bool isWeeklyButtonToggled = false;
             bool isMonthlyButtonToggled = false;
@@ -259,8 +293,11 @@ namespace Budgetinator_2000.Controls
                 weeklyButton.Visible = isChecked;
                 monthlyButton.Visible = isChecked;
                 yearlyButton.Visible = isChecked;
+                endDateLabel.Visible = isChecked;
+                endDatePicker.Visible = isChecked;
             };
-            // Amount TextBox 
+
+            // Amount TextBox
             TextBox amountTextBox = new TextBox
             {
                 Text = "Enter Amount",
@@ -269,6 +306,7 @@ namespace Budgetinator_2000.Controls
                 BackColor = Color.LightGray,
                 TextAlign = HorizontalAlignment.Center
             };
+            Controls.Add(amountTextBox);
 
             amountTextBox.GotFocus += (sender, e) =>
             {
@@ -285,6 +323,7 @@ namespace Budgetinator_2000.Controls
                     amountTextBox.Text = "Enter Amount";
                 }
             };
+
             // sallii vain numerot ja yhden pilkun, jonka jälkeen 2 numeroa
             amountTextBox.KeyPress += (sender, e) =>
             {
@@ -343,7 +382,6 @@ namespace Budgetinator_2000.Controls
                 }
             };
 
-
             CheckBox expenseCheckBox = new CheckBox
             {
                 Text = "Expense",
@@ -352,6 +390,8 @@ namespace Budgetinator_2000.Controls
                 BackColor = Color.DarkGray,
                 ForeColor = Color.White
             };
+            Controls.Add(expenseCheckBox);
+
             CheckBox incomeCheckBox = new CheckBox
             {
                 Text = "income",
@@ -360,16 +400,19 @@ namespace Budgetinator_2000.Controls
                 BackColor = Color.DarkGray,
                 ForeColor = Color.White
             };
+            Controls.Add(incomeCheckBox);
 
             CheckBox grossCheckBox = new CheckBox
             {
                 Text = "gross",
-                Size = new Size(100, 30),
+                Size = new Size(80, 30),
                 Location = new Point(amountTextBox.Left, amountTextBox.Bottom + 10),
                 BackColor = Color.DarkGray,
                 ForeColor = Color.White,
                 Visible = false
             };
+            Controls.Add(grossCheckBox);
+
             CheckBox netCheckBox = new CheckBox
             {
                 Text = "Net",
@@ -379,15 +422,18 @@ namespace Budgetinator_2000.Controls
                 ForeColor = Color.White,
                 Visible = false
             };
+            Controls.Add(netCheckBox);
 
             TextBox netTaxTextBox = new TextBox
             {
                 Text = "Enter Tax %",
                 Size = new Size(70, 30),
-                Location = new Point(netCheckBox.Right, 305),
+                Location = new Point(netCheckBox.Right, amountTextBox.Bottom + 35),
                 BackColor = Color.LightGray,
                 Visible = false
             };
+            Controls.Add(netTaxTextBox);
+
             // pilotee asioita ja laittaa esille
             categoryComboBox.SelectedIndexChanged += (sender, e) =>
             {
@@ -483,21 +529,17 @@ namespace Budgetinator_2000.Controls
             // Sallitaan vain numeroita ja yksi pilkku (kaksi desimaalia). Estetään välilyönnit.
             netTaxTextBox.KeyPress += (sender, e) =>
             {
-                // Estetään välilyönti
                 if (e.KeyChar == ' ')
                 {
                     e.Handled = true;
                     return;
                 }
 
-                // Salli ohjauskomennot (esim. Backspace)
                 if (char.IsControl(e.KeyChar))
                     return;
 
-                // Poistetaan väliaikaisesti mahdollinen '%'
                 string textWithoutPercent = netTaxTextBox.Text.Replace("%", "");
 
-                // Jos käyttäjä yrittää syöttää pilkun aivan alkuun, lisätään "0,"
                 if (textWithoutPercent.Length == 0 && e.KeyChar == ',')
                 {
                     netTaxTextBox.Text = "0,";
@@ -506,10 +548,8 @@ namespace Budgetinator_2000.Controls
                     return;
                 }
 
-                // Jos tekstissä on jo pilkku
                 if (textWithoutPercent.Contains(','))
                 {
-                    // Estä toisen pilkun syöttö
                     if (e.KeyChar == ',')
                     {
                         e.Handled = true;
@@ -519,14 +559,12 @@ namespace Budgetinator_2000.Controls
                     int indexAfterComma = textWithoutPercent.IndexOf(',') + 1;
                     int decimalsAfterComma = textWithoutPercent.Length - indexAfterComma;
 
-                    // Estä yli kahden desimaalin syöttö
                     if (decimalsAfterComma >= 2)
                     {
                         e.Handled = true;
                         return;
                     }
 
-                    // Salli vain numerot
                     if (!char.IsDigit(e.KeyChar))
                     {
                         e.Handled = true;
@@ -534,13 +572,11 @@ namespace Budgetinator_2000.Controls
                 }
                 else
                 {
-                    // Ei ole vielä pilkkua, joten sallitaan pilkku tai numero
                     if (e.KeyChar == ',')
                     {
                         return;
                     }
 
-                    // Muutoin vain numerot
                     if (!char.IsDigit(e.KeyChar))
                     {
                         e.Handled = true;
@@ -548,26 +584,24 @@ namespace Budgetinator_2000.Controls
                 }
             };
 
-
-
             // Submit Button
             Button submitButton = new Button
             {
                 Text = "Add money",
                 Size = new Size(200, 30),
-                Location = new Point((Width - 200) / 2, amountTextBox.Bottom + 80),
+                Location = new Point((Width - 200) / 2, netTaxTextBox.Bottom + 30), // Sijoitetaan alemmas
                 BackColor = Color.LightGreen
             };
+            Controls.Add(submitButton);
 
             submitButton.Click += (sender, e) =>
             {
                 // Tarkistetaan Name‐kenttä
-                if (string.IsNullOrWhiteSpace(nameTextBox.Text) || nameTextBox.Text == "Name")
+                if (string.IsNullOrWhiteSpace(descriptionTextBox.Text) || descriptionTextBox.Text == "Transaction name")
                 {
                     MessageBox.Show("Please enter a valid Name.");
                     return;
                 }
-
 
                 // Tarkistetaan Category
                 if (categoryComboBox.SelectedItem == null || categoryComboBox.SelectedItem.ToString() == "Pick category")
@@ -602,7 +636,6 @@ namespace Budgetinator_2000.Controls
                 // Jos category on "Salary", transaction on automaattisesti Income
                 if (categoryComboBox.SelectedItem.ToString() == "Salary")
                 {
-                    // Vaadi myös Gross tai Net jos Salary
                     if (!grossCheckBox.Checked && !netCheckBox.Checked)
                     {
                         MessageBox.Show("Please select Gross or Net for 'Salary'.");
@@ -613,14 +646,12 @@ namespace Budgetinator_2000.Controls
                 }
                 else
                 {
-                    // Muissa kategorioissa pitää valita Expense tai income
                     if (!expenseCheckBox.Checked && !incomeCheckBox.Checked)
                     {
                         MessageBox.Show("Please select Expense or income.");
                         return;
                     }
 
-                    // Jos expense valittu, tyyppi = Expense, muuten Income
                     if (expenseCheckBox.Checked)
                     {
                         type = TransactionType.Expense;
@@ -631,11 +662,11 @@ namespace Budgetinator_2000.Controls
                     }
                 }
 
+
                 decimal finalAmount = amount;
                 if (netCheckBox.Checked)
                 {
                     string taxTextWithoutPercent = netTaxTextBox.Text.Replace("%", "");
-                    // Yritetään parse veroprosentti
                     if (!decimal.TryParse(taxTextWithoutPercent.Replace(',', '.'),
                                           NumberStyles.AllowDecimalPoint,
                                           CultureInfo.InvariantCulture,
@@ -644,9 +675,12 @@ namespace Budgetinator_2000.Controls
                         MessageBox.Show("Please enter valid Tax %.");
                         return;
                     }
-                    // Lasketaan veron määrä
+                    if (taxPercent < 0 || taxPercent > 100)
+                    {
+                        MessageBox.Show("Tax percentage must be between 0 and 100.");
+                        return;
+                    }
                     decimal taxDeduction = SalaryCalculations.TaxDeduction(amount, taxPercent);
-                    // Lasketaan nettopalkka
                     finalAmount = SalaryCalculations.NetSalary(amount, taxDeduction);
                 }
 
@@ -659,38 +693,94 @@ namespace Budgetinator_2000.Controls
                     Type = type
                 };
 
-                transactionService.AddTransaction(newTransaction);
-                budgetChart!.SetDateRange(
-                new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-11),
-                DateTime.Today
+                transactionService.AddTransaction(newTransaction); 
+
+                if (repeatCheckBox.Checked && isWeeklyButtonToggled)
+                {
+                    DateTime startDate = datePicker.Value;
+                    DateTime endDate = endDatePicker.Value;
+
+                    if (startDate > endDate)
+                    {
+                        MessageBox.Show("End date must be greater than Start date");
+                        return;
+                    }
+
+                    for (DateTime currentDate = startDate.AddDays(7); currentDate <= endDate; currentDate = currentDate.AddDays(7))
+                    {
+                        var recurringTransaction = new Transaction
+                        {
+                            Date = currentDate,
+                            Amount = finalAmount,
+                            Category = new Category { Name = categoryComboBox.SelectedItem.ToString() },
+                            Description = descriptionTextBox.Text + " (Weekly)",
+                            Type = type
+                        };
+                        transactionService.AddTransaction(recurringTransaction);
+                    }
+                }
+                else if (repeatCheckBox.Checked && isMonthlyButtonToggled)
+                {
+                    DateTime startDate = datePicker.Value;
+                    DateTime endDate = endDatePicker.Value;
+
+                    if (startDate > endDate)
+                    {
+                        MessageBox.Show("End date must be greater than Start date");
+                        return;
+                    }
+
+                    for (DateTime currentDate = startDate.AddMonths(1); currentDate <= endDate; currentDate = currentDate.AddMonths(1))
+                    {
+                        var recurringTransaction = new Transaction
+                        {
+                            Date = currentDate,
+                            Amount = finalAmount,
+                            Category = new Category { Name = categoryComboBox.SelectedItem.ToString() },
+                            Description = descriptionTextBox.Text + " (Monthly)",
+                            Type = type
+                        };
+                        transactionService.AddTransaction(recurringTransaction);
+                    }
+                }
+                else if (repeatCheckBox.Checked && isYearlyButtonToggled)
+                {
+                    DateTime startDate = datePicker.Value;
+                    DateTime endDate = endDatePicker.Value;
+
+                    if (startDate > endDate)
+                    {
+                        MessageBox.Show("End date must be greater than Start date");
+                        return;
+                    }
+
+                    for (DateTime currentDate = startDate.AddYears(1); currentDate <= endDate; currentDate = currentDate.AddYears(1))
+                    {
+                        var recurringTransaction = new Transaction
+                        {
+                            Date = currentDate,
+                            Amount = finalAmount,
+                            Category = new Category { Name = categoryComboBox.SelectedItem.ToString() },
+                            Description = descriptionTextBox.Text + " (Yearly)",
+                            Type = type
+                        };
+                        transactionService.AddTransaction(recurringTransaction);
+                    }
+                }
+
+                // Päivitetään näkymät
+                budgetChart.SetDateRange(
+                    new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-11),
+                    DateTime.Today
                 );
                 budgetChart.SetTransactions(transactionService.GetTransactions());
                 budgetChart.Invalidate();
                 budgetChart.Update();
-                transactionHistory!.SetTransactions(transactionService.GetTransactions());
+                transactionHistory.SetTransactions(transactionService.GetTransactions());
                 transactionHistory.Invalidate();
 
                 MessageBox.Show("Transaction added!");
             };
-
-
-
-            Controls.Add(nameTextBox);
-            Controls.Add(descriptionTextBox);
-            Controls.Add(dateLabel);
-            Controls.Add(datePicker);
-            Controls.Add(categoryComboBox);
-            Controls.Add(repeatCheckBox);
-            Controls.Add(weeklyButton);
-            Controls.Add(monthlyButton);
-            Controls.Add(yearlyButton);
-            Controls.Add(amountTextBox);
-            Controls.Add(netTaxTextBox);
-            Controls.Add(expenseCheckBox);
-            Controls.Add(incomeCheckBox);
-            Controls.Add(grossCheckBox);
-            Controls.Add(netCheckBox);
-            Controls.Add(submitButton);
         }
 
         private void CloseButton_Click(object? sender, EventArgs e)
