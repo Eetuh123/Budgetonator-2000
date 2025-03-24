@@ -86,7 +86,7 @@ namespace Budgetinator_2000.Views
                     }
 
                 int xPosition = correctX;
-                string categoryText = transaction.Category != null ? transaction.Category.Name :  "No Category";
+                string categoryText = transaction.Category?.Name != null ? transaction.Category.Name :  "No Category";
                 g.DrawString(categoryText, font, textBrush, xPosition, yPosition);
                 
                 SizeF categorySize = g.MeasureString(categoryText, font);

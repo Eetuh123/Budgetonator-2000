@@ -11,7 +11,7 @@ namespace Budgetinator_2000
         private TransactionHistory transactionHistory;
         private TransactionService transactionService = new TransactionService();
 
-        private MovablePanel movablePanel;
+        private MovablePanel? movablePanel;
 
         private Budget budget = new Budget();
 
@@ -41,11 +41,18 @@ namespace Budgetinator_2000
                 Size = new Size(400, ClientSize.Height),
                 Location = new Point(10, 10)
             };
-
+             // Button to open the movable panel
+            openMovablePanelButton = new Button
+            {
+                Text = "Add transaction",
+                Size = new Size(scrollPanel.Width - SystemInformation.VerticalScrollBarWidth, 60),
+                Location = new Point(10, 10),
+                BackColor = Color.LightGray
+            };
             // Search Box bro
             TextBox searchBox = new TextBox
             {
-                Location = new Point(0, 0),
+                Location = new Point(10, openMovablePanelButton.Bottom + 5),
                 Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth
             };
 
@@ -54,8 +61,7 @@ namespace Budgetinator_2000
             {
                 AutoSize = false,
                 Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth,
-                Location = new Point(0, searchBox.Height + 5),
-                Dock = DockStyle.Top,
+                Location = new Point(10, searchBox.Bottom + 5),
             };
 
             // Search Enter Key = Working
@@ -79,19 +85,12 @@ namespace Budgetinator_2000
                 searchBox.Width = scrollPanel.Width - SystemInformation.VerticalScrollBarWidth;
             };
             // Add controls to form
-            scrollPanel.Controls.Add(searchBox);
+            Controls.Add(openMovablePanelButton);
+            Controls.Add(searchBox);
             scrollPanel.Controls.Add(transactionHistory);
             Controls.Add(scrollPanel);
             Controls.Add(budgetChart);
 
-            // Button to open the movable panel
-            openMovablePanelButton = new Button
-            {
-                Text = "Add transaction",
-                Size = new Size(120, 40),
-                Location = new Point(600, 600),
-                BackColor = Color.LightGray
-            };
             openMovablePanelButton.Click += (s, e) =>
             {
                 if (movablePanel == null || movablePanel.IsDisposed)
@@ -104,7 +103,6 @@ namespace Budgetinator_2000
                 }
                 movablePanel.BringToFront();
             };
-            Controls.Add(openMovablePanelButton);
 
             // Generate some sample shit
             Load += (s, e) => GenerateSampleData();
