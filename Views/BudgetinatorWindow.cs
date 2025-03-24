@@ -39,7 +39,7 @@ namespace Budgetinator_2000
             {
                 AutoScroll = true,
                 Size = new Size(400, ClientSize.Height),
-                Location = new Point(0, 10)
+                Location = new Point(0, 100)
             };
              // Button to open the movable panel
             openMovablePanelButton = new Button
@@ -60,9 +60,8 @@ namespace Budgetinator_2000
             transactionHistory = new TransactionHistory
             {
                 AutoSize = false,
-                Dock = DockStyle.Top,
                 Width = scrollPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 1,
-                Location = new Point(0, searchBox.Height + 5)
+                Location = new Point(10, searchBox.Bottom - 100)
             };
 
             // Search Enter Key = Working
