@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Budgetinator_2000.Views;
@@ -17,8 +17,8 @@ namespace Budgetinator_2000.Controls
         private Label dateLabel;
         private DateTimePicker endDatePicker;
         private Label endDateLabel;
-        private TransactionHistory transactionHistory;
-        private BudgetChart budgetChart;
+        private TransactionHistory? transactionHistory;
+        private BudgetChart? budgetChart;
 
         private readonly TransactionService transactionService;
 
@@ -769,14 +769,14 @@ namespace Budgetinator_2000.Controls
                 }
 
                 // Päivitetään näkymät
-                budgetChart.SetDateRange(
+                budgetChart!.SetDateRange(
                     new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-11),
                     DateTime.Today
                 );
                 budgetChart.SetTransactions(transactionService.GetTransactions());
                 budgetChart.Invalidate();
                 budgetChart.Update();
-                transactionHistory.SetTransactions(transactionService.GetTransactions());
+                transactionHistory!.SetTransactions(transactionService.GetTransactions());
                 transactionHistory.Invalidate();
 
                 MessageBox.Show("Transaction added!");
