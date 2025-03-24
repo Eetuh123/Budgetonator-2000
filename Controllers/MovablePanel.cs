@@ -16,8 +16,8 @@ namespace Budgetinator_2000.Controls
         private Button closeButton;
         private DateTimePicker datePicker;
         private Label dateLabel;
-        private TransactionHistory transactionHistory;
-        private BudgetChart budgetChart;
+        private TransactionHistory? transactionHistory;
+        private BudgetChart? budgetChart;
 
         private readonly TransactionService transactionService;
 
@@ -660,14 +660,14 @@ namespace Budgetinator_2000.Controls
                 };
 
                 transactionService.AddTransaction(newTransaction);
-                budgetChart.SetDateRange(
+                budgetChart!.SetDateRange(
                 new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-11),
                 DateTime.Today
                 );
                 budgetChart.SetTransactions(transactionService.GetTransactions());
                 budgetChart.Invalidate();
                 budgetChart.Update();
-                transactionHistory.SetTransactions(transactionService.GetTransactions());
+                transactionHistory!.SetTransactions(transactionService.GetTransactions());
                 transactionHistory.Invalidate();
 
                 MessageBox.Show("Transaction added!");
